@@ -24,9 +24,9 @@ Please check out the paper for more details, and this repo will detail how to ru
 
 - [x] HELMET Code
 - [x] HELMET data
+- [x] VLLM Support
 - [ ] Correlation analysis notebook
 - [ ] Retrieval setup
-- [ ] VLLM Support
 
 
 ## Setup
@@ -47,7 +47,7 @@ You should also set the environmental variables accordingly so the API calls can
 
 ## Data
 
-<img width="1354" alt="image" src="https://github.com/user-attachments/assets/db748c54-57c5-41f2-8d02-576555a44a1f">
+<img width="1354" alt="benchmark_overview" src="assets/benchmark_overview.png">
 
 You can download the data with the script:
 ```bash
@@ -76,8 +76,9 @@ You may also run the whole suite with a simple bash statement:
 bash scripts/run_eval.sh
 ```
 Check out the script file for more details!
+See [Others](#others) for the slurm scripts, easily collecting all the results, and using VLLM.
 
-The full results from our evaluation are [here](https://shorturl.at/u7fgY).
+The full results from our evaluation are [here](https://docs.google.com/spreadsheets/d/1LBt6dP4UwZwU_CjoYhyAd_rjKhQLvo0Gq4cYUnpi_CA/edit?usp=sharing).
 
 ### Model-based evaluation
 
@@ -96,7 +97,7 @@ You may also use Claude, Gemini, or other models for model-based evaluation by m
 
 ## Adding new models
 
-The existing code supports using HuggingFace-supported models and API models (OpenAI, Anthropic, Google, and Together). To add a new model or use a different framework (e.g., VLLM), you can modify the `model_utils.py` file.
+The existing code supports using HuggingFace-supported models and API models (OpenAI, Anthropic, Google, and Together). To add a new model or use a different framework (other than HuggingFace), you can modify the `model_utils.py` file.
 Specifically, you need to create a new class that implements `prepare_inputs` (how the inputs are processed) and `generate` functions. Then, you can add a new case to `load_LLM`.
 Please refer to the existing classes for examples.
 
@@ -117,12 +118,24 @@ You can refer to the existing tasks for examples (e.g., `load_json_kv`, `load_na
 
 ## Dataset correlation analysis 
 
-<img width="838" alt="image" src="https://github.com/user-attachments/assets/7b2dcb8e-ee1b-4e87-acf6-978db99df0b1">
+<img width="838" alt="task_correlation" src="assets/task_correlation.png">
 
 We also analyze the correlation between performance on different datasets.
 The code will be released soon.
 
 ## Others
+
+<details>
+
+<summary>Collecting results</summary>
+To quickly collect all the results, you can use the script:
+```bash
+python scripts/collect_results.py
+```
+Please check out the script and modify the specific fields to fit your needs.
+For example, you can change the models, task configs, output directories, tags, and more.
+
+</details>
 
 <details>
 
@@ -142,8 +155,25 @@ For example:
  - `--gres=gpu:1` specifies the number of GPUs you want to use, for the larger models, you may need more GPUs (we use up to 8x80GB GPUs).
  - `--mail-user` specifies the email address to send the job status to.
  - `source env/bin/activate` specifies the virtual environment to use.
+ - `MODEL_NAME="/path/to/your/model/$MNAME"` you should specify the path to your model here.
 
 </details>
+
+<details>
+
+<summary>Using VLLM</summary>
+
+To use VLLM to run the evaluation, you can simply add the `--use_vllm` flag to the command line like so:
+```bash
+python eval.py --config configs/cite.yaml --use_vllm
+```
+Disclaimer: 
+VLLM can be much faster than using the native HuggingFace generation; however, we found that the results can be slightly different, so we recommend using the native HuggingFace generation for the final evaluation.
+All reported results in the paper are from the native HuggingFace generation.
+The speedup is much more noticable for tasks that generates more tokens (e.g., summarization may see up to 2x speedup), whereas the speedup is less noticable for tasks that generate fewer tokens (e.g., JSON KV may see less than 5% speedup).
+
+</details>
+
 
 
 ## Contacts
