@@ -1,11 +1,11 @@
 wheel
 ninja
 packaging
-torch
+torch==2.1.2
 datasets
-transformers
+transformers==4.42.4
 accelerate
 sentencepiece
-flash-attn
+flash-attn==2.5.6
 pytrec_eval
 rouge_score
