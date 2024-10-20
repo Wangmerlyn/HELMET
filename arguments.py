@@ -33,7 +33,7 @@ def parse_arguments():
     parser.add_argument("--do_sample", type=ast.literal_eval, choices=[True, False], default=False, help="whether to use sampling (false is greedy)")
     parser.add_argument("--generation_max_length", type=str, default='10', help="max number of tokens to generate, can be separated by comma to match the specified datasets")
     parser.add_argument("--generation_min_length", type=int, default=0, help="min number of tokens to generate")
-    parser.add_argument("--temperature", type=float, default=1.0, help="generation temperature")
+    parser.add_argument("--temperature", type=float, default=0, help="generation temperature")
     parser.add_argument("--top_p", type=float, default=1.0, help="top-p parameter for nucleus sampling")
     parser.add_argument("--stop_newline", type=ast.literal_eval, choices=[True, False], default=False, help="whether to stop generation at newline")
 
